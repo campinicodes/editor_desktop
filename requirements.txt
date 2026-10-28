@@ -1,0 +1,4 @@
+# Editor desktop de cidades – Python 3.10+ (Tkinter já vem com o Python do python.org no Windows/macOS)
+shapely>=2.0
+pyproj>=3.6
+jsonschema>=4.18

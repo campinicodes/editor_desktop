@@ -1,0 +1,2021 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://plataforma-zoneamento.local/schema/cidade.schema.json",
+ "title": "Cidade – parâmetros urbanísticos normalizados (plataforma multicidades STAR/Tenda)",
+ "description": "Fonte de verdade do formato <slug>.json (schema_versao 1.2; 1.1 continua aceito). Ver PADRAO_JSON.md e schema/README.md.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "schema_versao",
+  "municipio",
+  "uf",
+  "slug",
+  "codigo_ibge",
+  "data_levantamento",
+  "centro_mapa",
+  "marco_legal_vigente",
+  "fontes",
+  "macrozonas",
+  "zonas",
+  "camadas_complementares",
+  "outorga_onerosa",
+  "zeis_his",
+  "outros_parametros",
+  "resumo_mcmv",
+  "geografico",
+  "lacunas"
+ ],
+ "properties": {
+  "schema_versao": {
+   "enum": [
+    "1.1",
+    "1.2"
+   ],
+   "description": "1.2 acrescenta os blocos OPCIONAIS definicoes_parametros_adicionais (cidade) e parametros_adicionais (zona). Arquivos 1.1 continuam válidos."
+  },
+  "municipio": {
+   "type": "string"
+  },
+  "uf": {
+   "type": "string",
+   "pattern": "^[A-Z]{2}$"
+  },
+  "slug": {
+   "type": "string",
+   "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+  },
+  "codigo_ibge": {
+   "type": "string",
+   "pattern": "^\\d{7}$"
+  },
+  "data_levantamento": {
+   "type": "string",
+   "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+  },
+  "data_atualizacao": {
+   "type": [
+    "string",
+    "null"
+   ],
+   "description": "(1.2, opcional) Data ISO da última atualização feita pelo editor desktop ou à mão."
+  },
+  "centro_mapa": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "lat",
+    "lon",
+    "zoom"
+   ],
+   "properties": {
+    "lat": {
+     "type": "number",
+     "minimum": -90,
+     "maximum": 90
+    },
+    "lon": {
+     "type": "number",
+     "minimum": -180,
+     "maximum": 180
+    },
+    "zoom": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 20
+    }
+   }
+  },
+  "orgao_confirmacao": {
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "exemplo_ficticio": {
+   "type": "boolean"
+  },
+  "aviso": {
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "marco_legal_vigente": {
+   "type": "string"
+  },
+  "fontes": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "id",
+     "titulo",
+     "lei",
+     "data",
+     "url"
+    ],
+    "properties": {
+     "id": {
+      "$ref": "#/$defs/fonte_id"
+     },
+     "titulo": {
+      "type": "string"
+     },
+     "lei": {
+      "type": "string"
+     },
+     "data": {
+      "type": "string"
+     },
+     "url": {
+      "type": "string",
+      "pattern": "^https?://"
+     },
+     "arquivo_local": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "observacao": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    }
+   }
+  },
+  "macrozonas": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "codigo",
+     "nome",
+     "descricao",
+     "parametros"
+    ],
+    "properties": {
+     "codigo": {
+      "$ref": "#/$defs/codigo"
+     },
+     "nome": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "descricao": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "parametros": {
+      "type": "object",
+      "propertyNames": {
+       "$ref": "#/$defs/chave"
+      },
+      "additionalProperties": {
+       "$ref": "#/$defs/parametro_livre"
+      }
+     }
+    }
+   }
+  },
+  "macrozonas_observacao": {
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "zonas": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "$ref": "#/$defs/zona"
+   }
+  },
+  "definicoes_parametros_adicionais": {
+   "type": "array",
+   "description": "Catálogo (opcional, 1.2) dos atributos novos da cidade. Cada chave aqui pode aparecer em zonas[].parametros_adicionais, com valor no MESMO formato de parâmetro.",
+   "items": {
+    "$ref": "#/$defs/definicao_parametro_adicional"
+   }
+  },
+  "camadas_complementares": {
+   "type": "object",
+   "propertyNames": {
+    "$ref": "#/$defs/chave"
+   },
+   "additionalProperties": {
+    "$ref": "#/$defs/camada"
+   }
+  },
+  "outorga_onerosa": {
+   "$ref": "#/$defs/bloco"
+  },
+  "zeis_his": {
+   "$ref": "#/$defs/bloco"
+  },
+  "outros_parametros": {
+   "$ref": "#/$defs/bloco"
+  },
+  "resumo_mcmv": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "geografico": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "descricao",
+    "crs",
+    "servidor_oficial",
+    "camadas",
+    "regras_de_consulta",
+    "limitacoes"
+   ],
+   "properties": {
+    "descricao": {
+     "type": "string"
+    },
+    "crs": {
+     "const": "EPSG:4326"
+    },
+    "crs_area": {
+     "type": "string",
+     "pattern": "^EPSG:\\d{4,5}$"
+    },
+    "servidor_oficial": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "camadas": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "nome",
+       "fonte_url",
+       "data_download",
+       "oficial",
+       "metodo",
+       "erro_estimado_m"
+      ],
+      "anyOf": [
+       {
+        "required": [
+         "arquivo"
+        ]
+       },
+       {
+        "required": [
+         "campo"
+        ]
+       }
+      ],
+      "properties": {
+       "nome": {
+        "type": "string"
+       },
+       "arquivo": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "campo": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "fonte_url": {
+        "type": "string"
+       },
+       "data_download": {
+        "type": "string"
+       },
+       "oficial": {
+        "type": "boolean"
+       },
+       "metodo": {
+        "type": "string"
+       },
+       "erro_estimado_m": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "n_feicoes": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "minimum": 0
+       }
+      }
+     }
+    },
+    "regras_de_consulta": {
+     "type": "string"
+    },
+    "limitacoes": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "raio_divisa_m": {
+     "type": "number",
+     "minimum": 0
+    },
+    "pct_minimo_significativo": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 100
+    },
+    "camadas_detalhe": {
+     "description": "Anotação livre, NÃO normativa – consumidores devem ignorar."
+    },
+    "regras_de_consulta_texto": {
+     "description": "Anotação livre, NÃO normativa – consumidores devem ignorar."
+    },
+    "notas_tecnicas": {
+     "type": "object",
+     "description": "Anotações livres, NÃO normativas (histórico de download etc.)."
+    }
+   }
+  },
+  "lacunas": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "item",
+     "motivo"
+    ],
+    "properties": {
+     "item": {
+      "type": "string"
+     },
+     "motivo": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "historico_alteracoes": {
+   "type": "array",
+   "description": "(1.2, opcional) Registro das atualizações da cidade, da mais antiga para a mais nova. Consumidores podem ignorar.",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "data",
+     "resumo"
+    ],
+    "properties": {
+     "data": {
+      "type": "string"
+     },
+     "resumo": {
+      "type": "string",
+      "minLength": 1
+     },
+     "ferramenta": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "autor": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    }
+   }
+  }
+ },
+ "$defs": {
+  "codigo": {
+   "type": "string",
+   "pattern": "^\\S(.*\\S)?$",
+   "description": "Código oficial da zona/feição como string, exatamente como na lei/base oficial (sem espaços nas pontas). Ex.: 'Z1', 'ZEIS2', 'AEIS FAVELA'."
+  },
+  "fonte_id": {
+   "type": "string",
+   "pattern": "^[A-Za-z0-9_\\-]+$"
+  },
+  "chave": {
+   "type": "string",
+   "pattern": "^[a-z][a-z0-9_]*$",
+   "description": "snake_case minúsculo sem acento"
+  },
+  "faixa": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "min",
+    "max"
+   ],
+   "properties": {
+    "min": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "max": {
+     "type": [
+      "number",
+      "null"
+     ]
+    }
+   },
+   "description": "Intervalo numérico. null = sem limite naquele lado."
+  },
+  "valor_qualquer": {
+   "type": [
+    "number",
+    "array",
+    "null"
+   ],
+   "items": {
+    "type": "string"
+   }
+  },
+  "condicional": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "condicao",
+    "forma",
+    "valor"
+   ],
+   "description": "Um caso de um parâmetro que varia por condição (pavimento, IE, macrozona, tipo de lote…). Herda unidade e fonte do parâmetro pai.",
+   "properties": {
+    "condicao": {
+     "type": "string",
+     "minLength": 1,
+     "description": "Texto curto da condição, ex.: 'térreo e 1º pavimento', 'IE > 2', 'esquina'."
+    },
+    "codigo": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/codigo"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "description": "Se a condição é um código (zona, macrozona, ZA), o código."
+    },
+    "forma": {
+     "enum": [
+      "unico",
+      "faixa",
+      "formula",
+      "lista",
+      "livre",
+      "herda_da_base",
+      "nao_aplicavel",
+      "sem_dado",
+      "texto"
+     ]
+    },
+    "valor": {
+     "$ref": "#/$defs/valor_qualquer"
+    },
+    "faixa": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/faixa"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "formula": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "texto_original": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "observacao": {
+     "type": [
+      "string",
+      "null"
+     ]
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "unico"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "valor": {
+        "type": "number"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "lista"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "valor": {
+        "type": "array"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "faixa"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "faixa"
+      ],
+      "properties": {
+       "faixa": {
+        "$ref": "#/$defs/faixa"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "formula"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "formula"
+      ],
+      "properties": {
+       "formula": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "texto"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "texto_original"
+      ],
+      "properties": {
+       "texto_original": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "enum": [
+         "faixa",
+         "formula",
+         "livre",
+         "herda_da_base",
+         "nao_aplicavel",
+         "sem_dado",
+         "texto"
+        ]
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "valor": {
+        "type": "null"
+       }
+      }
+     }
+    }
+   ]
+  },
+  "parametro_base": {
+   "type": "object",
+   "required": [
+    "valor",
+    "unidade",
+    "fonte_id",
+    "artigo_anexo",
+    "observacao",
+    "forma"
+   ],
+   "properties": {
+    "valor": {
+     "$ref": "#/$defs/valor_qualquer"
+    },
+    "unidade": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "fonte_id": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/fonte_id"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "artigo_anexo": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "observacao": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "forma": {
+     "enum": [
+      "unico",
+      "faixa",
+      "condicional",
+      "formula",
+      "lista",
+      "livre",
+      "herda_da_base",
+      "nao_aplicavel",
+      "sem_dado",
+      "texto"
+     ]
+    },
+    "faixa": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/faixa"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "condicionais": {
+     "anyOf": [
+      {
+       "type": "array",
+       "minItems": 1,
+       "items": {
+        "$ref": "#/$defs/condicional"
+       }
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "formula": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "texto_original": {
+     "type": [
+      "string",
+      "null"
+     ]
+    }
+   },
+   "additionalProperties": false,
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "unico"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "valor": {
+        "type": "number"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "lista"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "valor": {
+        "type": "array"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "faixa"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "faixa"
+      ],
+      "properties": {
+       "faixa": {
+        "$ref": "#/$defs/faixa"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "condicional"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "condicionais"
+      ],
+      "properties": {
+       "condicionais": {
+        "type": "array"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "formula"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "formula"
+      ],
+      "properties": {
+       "formula": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "texto"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "texto_original"
+      ],
+      "properties": {
+       "texto_original": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "enum": [
+         "faixa",
+         "condicional",
+         "formula",
+         "livre",
+         "herda_da_base",
+         "nao_aplicavel",
+         "sem_dado",
+         "texto"
+        ]
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "valor": {
+        "type": "null"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "not": {
+         "const": "sem_dado"
+        }
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "fonte_id": {
+        "$ref": "#/$defs/fonte_id"
+       }
+      }
+     },
+     "description": "Todo parâmetro com conteúdo (qualquer forma exceto sem_dado) precisa de fonte_id."
+    }
+   ]
+  },
+  "parametro_livre": {
+   "allOf": [
+    {
+     "$ref": "#/$defs/parametro_base"
+    }
+   ],
+   "description": "Parâmetro de chave livre (outros, parametros_por_codigo, blocos)."
+  },
+  "p_coef": {
+   "anyOf": [
+    {
+     "allOf": [
+      {
+       "$ref": "#/$defs/parametro_base"
+      },
+      {
+       "properties": {
+        "valor": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "unidade": {
+         "const": "coeficiente"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "p_fracao": {
+   "anyOf": [
+    {
+     "allOf": [
+      {
+       "$ref": "#/$defs/parametro_base"
+      },
+      {
+       "properties": {
+        "valor": {
+         "type": [
+          "number",
+          "null"
+         ],
+         "minimum": 0,
+         "maximum": 1
+        },
+        "unidade": {
+         "const": "fracao"
+        }
+       }
+      }
+     ],
+     "description": "Taxas SEMPRE como fração 0–1 (30% → 0.3)."
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "p_metro": {
+   "anyOf": [
+    {
+     "allOf": [
+      {
+       "$ref": "#/$defs/parametro_base"
+      },
+      {
+       "properties": {
+        "valor": {
+         "type": [
+          "number",
+          "null"
+         ],
+         "minimum": 0
+        },
+        "unidade": {
+         "const": "m"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "p_m2": {
+   "anyOf": [
+    {
+     "allOf": [
+      {
+       "$ref": "#/$defs/parametro_base"
+      },
+      {
+       "properties": {
+        "valor": {
+         "type": [
+          "number",
+          "null"
+         ],
+         "minimum": 0
+        },
+        "unidade": {
+         "const": "m2"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "p_pav": {
+   "anyOf": [
+    {
+     "allOf": [
+      {
+       "$ref": "#/$defs/parametro_base"
+      },
+      {
+       "properties": {
+        "valor": {
+         "type": [
+          "integer",
+          "null"
+         ],
+         "minimum": 0
+        },
+        "unidade": {
+         "const": "pavimentos"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "p_dens": {
+   "anyOf": [
+    {
+     "allOf": [
+      {
+       "$ref": "#/$defs/parametro_base"
+      },
+      {
+       "properties": {
+        "valor": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "unidade": {
+         "enum": [
+          "hab/ha",
+          "uh/ha",
+          null
+         ]
+        }
+       }
+      }
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "p_vagas": {
+   "anyOf": [
+    {
+     "allOf": [
+      {
+       "$ref": "#/$defs/parametro_base"
+      },
+      {
+       "properties": {
+        "valor": {
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "unidade": {
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       }
+      }
+     ],
+     "description": "unidade livre, ex.: 'vagas/UH', 'vagas/100 m2'"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "p_usos": {
+   "anyOf": [
+    {
+     "allOf": [
+      {
+       "$ref": "#/$defs/parametro_base"
+      },
+      {
+       "properties": {
+        "valor": {
+         "type": [
+          "array",
+          "null"
+         ],
+         "items": {
+          "type": "string"
+         }
+        },
+        "unidade": {
+         "const": "codigos_de_uso"
+        }
+       }
+      }
+     ],
+     "description": "Lista de códigos/categorias de uso como a lei os nomeia (ex.: R1, E2)."
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "parametros": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "ca_minimo",
+    "ca_basico",
+    "ca_maximo",
+    "taxa_ocupacao",
+    "gabarito_altura_max_m",
+    "gabarito_pavimentos",
+    "taxa_permeabilidade",
+    "recuos",
+    "lote_minimo_m2",
+    "testada_minima_m",
+    "usos_permitidos",
+    "vagas",
+    "densidade",
+    "outros"
+   ],
+   "properties": {
+    "ca_minimo": {
+     "$ref": "#/$defs/p_coef"
+    },
+    "ca_basico": {
+     "$ref": "#/$defs/p_coef"
+    },
+    "ca_maximo": {
+     "$ref": "#/$defs/p_coef"
+    },
+    "taxa_ocupacao": {
+     "$ref": "#/$defs/p_fracao"
+    },
+    "taxa_permeabilidade": {
+     "$ref": "#/$defs/p_fracao"
+    },
+    "gabarito_altura_max_m": {
+     "$ref": "#/$defs/p_metro"
+    },
+    "gabarito_pavimentos": {
+     "$ref": "#/$defs/p_pav"
+    },
+    "recuos": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "frontal",
+      "lateral",
+      "fundos"
+     ],
+     "properties": {
+      "frontal": {
+       "$ref": "#/$defs/p_metro"
+      },
+      "lateral": {
+       "$ref": "#/$defs/p_metro"
+      },
+      "fundos": {
+       "$ref": "#/$defs/p_metro"
+      }
+     }
+    },
+    "lote_minimo_m2": {
+     "$ref": "#/$defs/p_m2"
+    },
+    "testada_minima_m": {
+     "$ref": "#/$defs/p_metro"
+    },
+    "usos_permitidos": {
+     "$ref": "#/$defs/p_usos"
+    },
+    "vagas": {
+     "$ref": "#/$defs/p_vagas"
+    },
+    "densidade": {
+     "$ref": "#/$defs/p_dens"
+    },
+    "outros": {
+     "type": "object",
+     "propertyNames": {
+      "$ref": "#/$defs/chave"
+     },
+     "additionalProperties": {
+      "$ref": "#/$defs/parametro_livre"
+     },
+     "description": "ÚNICO lugar com chaves livres dentro de parametros (índices locais: indice_elevacao, fator_oodc_fid…)."
+    }
+   }
+  },
+  "regra_sobreposicao": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "efeito"
+   ],
+   "properties": {
+    "efeito": {
+     "enum": [
+      "substitui",
+      "usa_indices_de",
+      "apenas_alerta"
+     ]
+    },
+    "usa_indices_de": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/codigo"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "aplica_sobre": {
+     "anyOf": [
+      {
+       "type": "array",
+       "items": {
+        "$ref": "#/$defs/codigo"
+       },
+       "minItems": 1
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "limiar_pct": {
+     "type": [
+      "number",
+      "null"
+     ],
+     "minimum": 0,
+     "maximum": 100
+    },
+    "requer_testada": {
+     "type": "boolean"
+    },
+    "distancia_max_m": {
+     "type": [
+      "number",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "fundamento": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "alerta": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "mantem_da_base": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$"
+     }
+    }
+   },
+   "if": {
+    "properties": {
+     "efeito": {
+      "const": "usa_indices_de"
+     }
+    }
+   },
+   "then": {
+    "required": [
+     "usa_indices_de"
+    ],
+    "properties": {
+     "usa_indices_de": {
+      "$ref": "#/$defs/codigo"
+     }
+    }
+   }
+  },
+  "geometria_geojson": {
+   "type": "object",
+   "required": [
+    "type",
+    "coordinates"
+   ],
+   "properties": {
+    "type": {
+     "enum": [
+      "Polygon",
+      "MultiPolygon",
+      "LineString",
+      "MultiLineString",
+      "Point",
+      "MultiPoint"
+     ]
+    },
+    "coordinates": {
+     "type": "array"
+    }
+   },
+   "description": "GeoJSON EPSG:4326 (lon, lat). Coordenadas checadas pelo validador semântico (shapely), não aqui."
+  },
+  "feicao": {
+   "type": "object",
+   "required": [
+    "type",
+    "properties",
+    "geometry"
+   ],
+   "properties": {
+    "type": {
+     "const": "Feature"
+    },
+    "properties": {
+     "type": "object",
+     "required": [
+      "codigo"
+     ],
+     "properties": {
+      "codigo": {
+       "$ref": "#/$defs/codigo"
+      }
+     },
+     "description": "Atributos da base oficial são repassados livremente; só 'codigo' é normativo."
+    },
+    "geometry": {
+     "$ref": "#/$defs/geometria_geojson"
+    }
+   }
+  },
+  "colecao": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "type",
+    "crs",
+    "fonte",
+    "oficial",
+    "features"
+   ],
+   "properties": {
+    "type": {
+     "const": "FeatureCollection"
+    },
+    "crs": {
+     "type": "string"
+    },
+    "fonte": {
+     "type": "string"
+    },
+    "oficial": {
+     "type": "boolean"
+    },
+    "observacao_geometria": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "features": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "$ref": "#/$defs/feicao"
+     }
+    }
+   }
+  },
+  "zona": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "codigo",
+    "nome",
+    "descricao",
+    "tipo",
+    "prioridade",
+    "categoria_normalizada",
+    "regra_sobreposicao",
+    "parametros",
+    "observacoes",
+    "geometria"
+   ],
+   "properties": {
+    "codigo": {
+     "$ref": "#/$defs/codigo"
+    },
+    "nome": {
+     "type": "string"
+    },
+    "descricao": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "tipo": {
+     "enum": [
+      "base",
+      "sobreposta",
+      "eixo"
+     ]
+    },
+    "prioridade": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "categoria_normalizada": {
+     "enum": [
+      "residencial_baixa_densidade",
+      "residencial_media_densidade",
+      "residencial_alta_densidade",
+      "mista_baixa_densidade",
+      "mista_media_densidade",
+      "mista_alta_densidade",
+      "centralidade",
+      "eixo",
+      "especial_interesse_social",
+      "especial_economica",
+      "industrial",
+      "ambiental",
+      "patrimonio_cultural",
+      "institucional",
+      "expansao",
+      "rural",
+      "outra"
+     ]
+    },
+    "categoria_criterio": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "regra_sobreposicao": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/regra_sobreposicao"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "parametros": {
+     "$ref": "#/$defs/parametros"
+    },
+    "observacoes": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "description": "Lista de observações (texto livre, uma por item). String solta do formato 1.0 vira [string]."
+    },
+    "geometria": {
+     "$ref": "#/$defs/colecao"
+    },
+    "parametros_adicionais": {
+     "type": "object",
+     "description": "Valores (opcional, 1.2) dos atributos declarados em definicoes_parametros_adicionais. Cada valor = parâmetro {valor, unidade, fonte_id, artigo_anexo, observacao, forma} ou null.",
+     "propertyNames": {
+      "$ref": "#/$defs/chave"
+     },
+     "additionalProperties": {
+      "$ref": "#/$defs/parametro_ou_null"
+     }
+    }
+   },
+   "if": {
+    "properties": {
+     "tipo": {
+      "const": "base"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "prioridade": {
+      "const": 0
+     }
+    }
+   }
+  },
+  "parametros_por_codigo": {
+   "type": "object",
+   "propertyNames": {
+    "$ref": "#/$defs/codigo"
+   },
+   "additionalProperties": {
+    "type": "object",
+    "propertyNames": {
+     "$ref": "#/$defs/chave"
+    },
+    "properties": {
+     "taxa_permeabilidade": {
+      "$ref": "#/$defs/p_fracao"
+     },
+     "taxa_ocupacao": {
+      "$ref": "#/$defs/p_fracao"
+     },
+     "densidade": {
+      "$ref": "#/$defs/p_dens"
+     }
+    },
+    "additionalProperties": {
+     "$ref": "#/$defs/parametro_livre"
+    }
+   }
+  },
+  "camada": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "papel",
+    "descricao",
+    "fonte",
+    "oficial",
+    "parametros_por_codigo",
+    "features"
+   ],
+   "properties": {
+    "papel": {
+     "enum": [
+      "permeabilidade",
+      "macrozona",
+      "restricao",
+      "informativa"
+     ]
+    },
+    "descricao": {
+     "type": "string"
+    },
+    "fonte": {
+     "type": "string"
+    },
+    "oficial": {
+     "type": "boolean"
+    },
+    "observacao": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "fonte_id": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/fonte_id"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "artigo_anexo": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "parametros_por_codigo": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/parametros_por_codigo"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "alerta_por_codigo": {
+     "anyOf": [
+      {
+       "type": "object",
+       "propertyNames": {
+        "$ref": "#/$defs/codigo"
+       },
+       "additionalProperties": {
+        "type": "string"
+       }
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "features": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/feicao"
+     }
+    }
+   },
+   "if": {
+    "properties": {
+     "papel": {
+      "const": "permeabilidade"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "parametros_por_codigo": {
+      "$ref": "#/$defs/parametros_por_codigo"
+     }
+    }
+   }
+  },
+  "item_bloco": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "chave",
+    "titulo",
+    "valor",
+    "unidade",
+    "fonte_id",
+    "artigo_anexo",
+    "observacao",
+    "forma"
+   ],
+   "properties": {
+    "chave": {
+     "$ref": "#/$defs/chave"
+    },
+    "titulo": {
+     "type": "string"
+    },
+    "valor": {
+     "$ref": "#/$defs/valor_qualquer"
+    },
+    "unidade": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "fonte_id": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/fonte_id"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "artigo_anexo": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "observacao": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "forma": {
+     "enum": [
+      "unico",
+      "faixa",
+      "condicional",
+      "formula",
+      "lista",
+      "livre",
+      "herda_da_base",
+      "nao_aplicavel",
+      "sem_dado",
+      "texto"
+     ]
+    },
+    "faixa": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/faixa"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "condicionais": {
+     "anyOf": [
+      {
+       "type": "array",
+       "minItems": 1,
+       "items": {
+        "$ref": "#/$defs/condicional"
+       }
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "formula": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "texto_original": {
+     "type": [
+      "string",
+      "null"
+     ]
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "unico"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "valor": {
+        "type": "number"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "lista"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "valor": {
+        "type": "array"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "faixa"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "faixa"
+      ],
+      "properties": {
+       "faixa": {
+        "$ref": "#/$defs/faixa"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "condicional"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "condicionais"
+      ],
+      "properties": {
+       "condicionais": {
+        "type": "array"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "formula"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "formula"
+      ],
+      "properties": {
+       "formula": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "const": "texto"
+       }
+      }
+     },
+     "then": {
+      "required": [
+       "texto_original"
+      ],
+      "properties": {
+       "texto_original": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "enum": [
+         "faixa",
+         "condicional",
+         "formula",
+         "livre",
+         "herda_da_base",
+         "nao_aplicavel",
+         "sem_dado",
+         "texto"
+        ]
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "valor": {
+        "type": "null"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "forma": {
+        "not": {
+         "const": "sem_dado"
+        }
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "fonte_id": {
+        "$ref": "#/$defs/fonte_id"
+       }
+      }
+     },
+     "description": "Todo parâmetro com conteúdo (qualquer forma exceto sem_dado) precisa de fonte_id."
+    }
+   ]
+  },
+  "bloco": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "resumo",
+    "fonte_id",
+    "artigo_anexo",
+    "itens"
+   ],
+   "properties": {
+    "resumo": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "fonte_id": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/fonte_id"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "artigo_anexo": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "itens": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/item_bloco"
+     }
+    }
+   },
+   "description": "Bloco temático: lista de itens nomeados (chave fixa por item), nunca chaves livres."
+  },
+  "definicao_parametro_adicional": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "chave",
+    "rotulo",
+    "unidade",
+    "tipo"
+   ],
+   "properties": {
+    "chave": {
+     "$ref": "#/$defs/chave"
+    },
+    "rotulo": {
+     "type": "string",
+     "minLength": 1,
+     "description": "Nome legível exibido na app."
+    },
+    "unidade": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "Unidade fixa do atributo (ex.: 'm', 'fracao', 'coeficiente', 'uh/ha'); null se não houver."
+    },
+    "tipo": {
+     "enum": [
+      "numero",
+      "inteiro",
+      "fracao",
+      "lista",
+      "texto"
+     ],
+     "description": "Como o valor é lido: numero/inteiro/fracao (0–1) → forma unico/faixa/condicional; lista → lista de strings; texto → forma texto (texto_original)."
+    },
+    "descricao": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "fonte_id": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/fonte_id"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "description": "Fonte padrão sugerida (opcional)."
+    },
+    "grupo": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "Agrupamento opcional para exibição (ex.: 'Ambiental')."
+    }
+   }
+  },
+  "parametro_ou_null": {
+   "anyOf": [
+    {
+     "$ref": "#/$defs/parametro_base"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  }
+ }
+}
